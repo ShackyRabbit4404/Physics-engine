@@ -20,12 +20,8 @@ public class GUI extends JComponent{
     }
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.setColor(Color.RED);
-        for(Properties2D p: objects.getObjects()){
-            g.fillRect((int)(((width/2)+p.getMappedX()*zoom)),(int)(((height/2)+p.getMappedY()*-1*zoom)),(int)(p.getWidth()*zoom),(int)(p.getHeight()*zoom));
-        }
         if(gridVisible){
-            g.setColor(Color.gray);
+            g.setColor(new Color(212, 212, 212));
             for(int i = 1; i < (int)(width/zoom); i++){
                 g.fillRect((int)(i*zoom),0,1,height);
             }
@@ -35,6 +31,10 @@ public class GUI extends JComponent{
             g.setColor(Color.BLACK);
             g.fillRect(width/2,0,1,height);
             g.fillRect(0,height/2,width,1);
+        }
+        g.setColor(Color.RED);
+        for(Properties2D p: objects.getObjects()){
+            g.fillRect((int)(((width/2)+p.getMappedX()*zoom)),(int)(((height/2)+p.getMappedY()*-1*zoom)),(int)(p.getWidth()*zoom),(int)(p.getHeight()*zoom));
         }
     }
 }   
