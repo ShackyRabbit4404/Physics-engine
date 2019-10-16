@@ -13,7 +13,6 @@ public class drawThread extends Thread{
     public void run(){
         while(drawScreen){
             screen.draw();
-            System.out.println("Updating Screen");
             try{
                 Thread.sleep((long)(1000/frameRate));
             }
