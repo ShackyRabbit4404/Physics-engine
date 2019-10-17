@@ -34,7 +34,18 @@ public class GUI extends JComponent{
         }
         g.setColor(Color.RED);
         for(Properties2D p: objects.getObjects()){
-            g.fillRect((int)(((width/2)+p.getMappedX()*zoom)),(int)(((height/2)+p.getMappedY()*-1*zoom)),(int)(p.getWidth()*zoom),(int)(p.getHeight()*zoom));
+            //g.fillRect((int)(((width/2)+p.getMappedX()*zoom)),(int)(((height/2)+p.getMappedY()*-1*zoom)),(int)(p.getWidth()*zoom),(int)(p.getHeight()*zoom));
+            g.fillPolygon(getScaledPolygon(p.getDrawPolygon()));
         }
+    }
+    public Polygon getScaledPolygon(double[][] cords){
+        int[] xpoints = new int[cords[0].length];
+        int[] ypoints = new int[cords[0].length];
+        for(int i = 0; i < xpoints.length; i++){
+            xpoints[i] = (int)(cords[0][i]*zoom+(width/2));
+            ypoints[i] = (int)(cords[1][i]*zoom*-1+(height/2));
+        }
+        System.out.println("X3: "+xpoints[0]);
+        return new Polygon(xpoints, ypoints,xpoints.length);
     }
 }   

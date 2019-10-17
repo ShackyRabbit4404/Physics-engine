@@ -22,4 +22,5 @@ public class Objects2D{
             p.updatePosition(tickRate);
         }   
     }   
+    
 }

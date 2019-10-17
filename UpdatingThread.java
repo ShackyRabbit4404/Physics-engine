@@ -1,9 +1,9 @@
-public class UpdateThread extends Thread{
+public class UpdatingThread extends Thread{
     private Objects2D objects;
     //times per second
     private double updateRate;
     private boolean stillUpdating;
-    public UpdateThread(Objects2D objs, int ur){
+    public UpdatingThread(Objects2D objs, int ur){
         objects = objs;
         updateRate = ur;
         stillUpdating = true;
@@ -12,8 +12,9 @@ public class UpdateThread extends Thread{
         stillUpdating = false;
     }
     public void run(){
+        System.out.println("Starting Updating thread");
         while(stillUpdating){
-            objects.update();
+            new Update(objects).start();
             try{
                 Thread.sleep((long)(1000/updateRate));
             }

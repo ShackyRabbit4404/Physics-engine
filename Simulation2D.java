@@ -6,7 +6,7 @@ public class Simulation2D{
     private JFrame frame;
     private drawThread screenThread;
     private double updateRate;
-    private UpdateThread simulatingThread;
+    private UpdatingThread simulatingThread;
     private boolean screenVisible;
     private double frameRate;
     public Simulation2D(){
@@ -14,7 +14,7 @@ public class Simulation2D{
         updateRate = 60;
         frameRate = 60;
         objects = new Objects2D(1/updateRate);
-        simulatingThread = new UpdateThread(objects,(int)updateRate);
+        simulatingThread = new UpdatingThread(objects,(int)updateRate);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         screen = new GUI(objects,screenSize.width,screenSize.height);
         screenThread = new drawThread(screen,frameRate);
