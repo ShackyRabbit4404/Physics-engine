@@ -16,16 +16,24 @@ public class Properties2D{
     private Polygon shape;
     private double[] xCords;
     private double[] yCords;
+    private boolean touchingObject;
+    //rotation speed in radians per second
+    private double rotationSpeed;
+    //center of the object
+    double[] centroid;
     public Properties2D(){
         xVelocity = 0;
         yVelocity = 0;
         xAcceleration = 0;
-        yAcceleration =0;
+        yAcceleration = 0;
         xPosition = 0;
         yPosition = 0;
         shape = new Polygon();
+        touchingObject = false;
+        rotationSpeed = 0;
+        centroid = new double[2];
     }
-    public Properties2D(double xv, double yv, double xa, double ya, double xp, double yp,int w,int h,int[] xps,int[] yps){
+    public Properties2D(double xv, double yv, double xa, double ya, double xp, double yp,int w,int h,int[] xps,int[] yps,boolean to,double rs){
         xVelocity = xv;
         yVelocity = yv;
         xAcceleration = xa;
@@ -35,6 +43,26 @@ public class Properties2D{
         width = w;
         height = h;
         shape = new Polygon(xps,yps,xps.length);
+        touchingObject = to;
+        double rotationSpeed = rs;
+    }
+    public double getRotationSpeed(){
+        return rotationSpeed;
+    }
+    public void setRotationSpeed(double rs){
+        rotationSpeed = rs;
+    }
+    public double[] getXCords(){
+        return xCords;
+    }
+    public double[] getYCords(){
+        return yCords;
+    }
+    public boolean getTouchingObject(){
+        return touchingObject;
+    }
+    public void setTouchingObject(boolean to){
+        touchingObject = to;
     }
     public double getMappedX(){
         return xPosition-(width/2);
@@ -93,9 +121,61 @@ public class Properties2D{
     public Polygon getShape(){
         return shape;
     }
-    public boolean collidesWith(Polygon s2){
-        for(int i = 0; i < s2.xpoints.length; i++){
-            if(shape.contains(s2.xpoints[i],s2.ypoints[i])){
+    public double[] calculateCentroid(){
+        double x = 0;
+        double y = 0;
+        for(int i = 0; i < xCords.length; i++){
+            x+=xCords[i];
+            y+=yCords[i];
+        }
+        return new double[]{x/xCords.length,y/xCords.length};
+    }
+    public void updateRotation(double tickRate){
+        double[][] points = transformToOrigin();
+        for(int i = 0; i < xCords.length;i++){
+            double x = points[0][i];
+            double y = points[1][i];
+            points[0][i] = x*Math.cos(rotationSpeed*tickRate)-y*Math.sin(rotationSpeed*tickRate);
+            points[1][i] = x*Math.sin(rotationSpeed*tickRate)+y*Math.cos(rotationSpeed*tickRate);
+        }
+        points = transformAwayFromOrigin(points);
+        xCords = points[0];
+        yCords = points[1];
+    }
+    public double[][] transformAwayFromOrigin(double[][] xys){
+        for(int i = 0; i < xys.length;i++){
+            xys[0][i] = xys[0][i]+centroid[0];
+            xys[1][i] = xys[1][i]+centroid[1];
+        }
+        return xys;
+    }
+    public double[][] transformToOrigin(){
+        double[][] ret = new double[2][xCords.length];
+        for(int i = 0; i < xCords.length;i++){
+            ret[0][i] = xCords[i]-centroid[0];
+            ret[1][i] = yCords[i]-centroid[1];
+        }
+        return ret;
+    }
+    public double[][] scaleShape(double scaleFactor){
+        double[][] ret = new double[2][xCords.length];
+        for(int i = 0; i < xCords.length; i++){
+            ret[0][i] = (xCords[i]+xPosition)*scaleFactor;
+            ret[1][i] = (yCords[i]+yPosition)*scaleFactor;
+        }
+        return ret;
+    }
+    public boolean collidesWith(double[] xpoints, double[] ypoints,double xp, double yp){
+        double scale = 100;
+        double[][] temp = scaleShape(scale+1);
+        int[] x = new int[temp[0].length];
+        int[] y = new int[temp[0].length];
+        for(int i = 0; i < x.length; i++){
+            x[i] = (int)(temp[0][i]+0.5);
+            y[i] = (int)(temp[1][i]+0.5);
+        }
+        for(int i = 0; i < xpoints.length; i++){
+            if(new Polygon(x,y,x.length).contains((xpoints[i]+xp)*scale,(ypoints[i]+yp)*scale)){
                 return true;
             }
         }
@@ -104,6 +184,7 @@ public class Properties2D{
     public void setShape(double[] xps, double[] yps){
         xCords = xps;
         yCords = yps;
+        centroid = calculateCentroid();
     }
     public void updatePosition(double tickRate){
         //tick rate is in seconds
@@ -114,12 +195,10 @@ public class Properties2D{
     }
     public double[][] getDrawPolygon(){
         double[][] cords = new double[2][xCords.length];
-        System.out.println("X1: "+xCords[0]);
         for(int i = 0; i < xCords.length;i++){
             cords[0][i] = xCords[i]+xPosition;
             cords[1][i] = yCords[i]+yPosition;
         }
-        System.out.println("X2: "+cords[0][0]);
         return cords;
     }
 }

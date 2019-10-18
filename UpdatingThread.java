@@ -14,7 +14,9 @@ public class UpdatingThread extends Thread{
     public void run(){
         System.out.println("Starting Updating thread");
         while(stillUpdating){
-            new Update(objects).start();
+            new positionUpdateThread(objects).start();
+            new collitionThread(objects).start();
+            new updateRotationThread(objects).start();
             try{
                 Thread.sleep((long)(1000/updateRate));
             }

@@ -32,9 +32,14 @@ public class GUI extends JComponent{
             g.fillRect(width/2,0,1,height);
             g.fillRect(0,height/2,width,1);
         }
-        g.setColor(Color.RED);
         for(Properties2D p: objects.getObjects()){
             //g.fillRect((int)(((width/2)+p.getMappedX()*zoom)),(int)(((height/2)+p.getMappedY()*-1*zoom)),(int)(p.getWidth()*zoom),(int)(p.getHeight()*zoom));
+            if(p.getTouchingObject()){
+                g.setColor(Color.RED);
+            }
+            else{
+                g.setColor(Color.GREEN);
+            }
             g.fillPolygon(getScaledPolygon(p.getDrawPolygon()));
         }
     }
@@ -45,7 +50,6 @@ public class GUI extends JComponent{
             xpoints[i] = (int)(cords[0][i]*zoom+(width/2));
             ypoints[i] = (int)(cords[1][i]*zoom*-1+(height/2));
         }
-        System.out.println("X3: "+xpoints[0]);
         return new Polygon(xpoints, ypoints,xpoints.length);
     }
 }   

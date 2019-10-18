@@ -1,6 +1,6 @@
-public class Update extends Thread{
+public class positionUpdateThread extends Thread{
     Objects2D objects;
-    public Update(Objects2D objs){
+    public positionUpdateThread(Objects2D objs){
         objects = objs;
     }
     public void run(){

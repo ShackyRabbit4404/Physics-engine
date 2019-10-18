@@ -22,5 +22,21 @@ public class Objects2D{
             p.updatePosition(tickRate);
         }   
     }   
-    
+    public void checkCollision(){
+        for(int i = 0; i < objects.size();i++){
+            boolean touching = false;
+            for(int a = 0;a < objects.size();a++){
+                Properties2D p = objects.get(a);
+                if(i != a && objects.get(i).collidesWith(p.getXCords(),p.getYCords(),p.getXPosition(),p.getYPosition())){
+                    touching = true;
+                }
+            }
+            objects.get(i).setTouchingObject(touching);
+        }
+    }
+    public void updateRotations(){
+        for(Properties2D p: objects){
+            p.updateRotation(tickRate);
+        }
+    }
 }
